@@ -1,0 +1,239 @@
+{% extends 'base/_layout_content.html' %}
+{% load staticfiles %}
+
+{% block content %}
+    <div class="wrapper wrapper-content">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>车主信息</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <div class="form-group">
+                    <button id="btnDel" type="button" class="btn btn-danger " onclick="delData()">
+                        <i class="fa fa-dedent"></i>&nbsp;&nbsp;<span class="bold">删除</span>
+                    </button>
+                </div>
+                <div class="form-group text-center">
+                    <div class="form-inline">
+                        用户名：
+                        <div class="input-group" style="width: 200px;">
+                            <input type="text" class="form-control" id="userId" data-id="{{ userId }}"
+                                   style="width: 200px;"
+                                   value="{{ userName }}"
+                                   autocomplete="off"/>
+                            <div class="input-group-btn">
+                                {#                                <button type="button" class="btn btn-white dropdown-toggle" data-toggle="">#}
+                                {#                                    <span class="caret"></span>#}
+                                {#                                </button>#}
+                                <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                </ul>
+                            </div>
+                        </div>
+                        注册日期：
+                        <input type="text" id="datemin" class="laydate-icon form-control layer-date">-
+                        <input type="text" id="datemax" class="laydate-icon form-control layer-date">
+                        <button id="btnSearch" class="btn btn btn-primary" type="button">
+                            <i class="fa fa-search"></i> 搜索
+                        </button>
+                    </div>
+                </div>
+                <div class="jqGrid_wrapper">
+                    <table id="table_list"></table>
+                    <div id="pager_list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block script %}
+    {% include 'include/jslist.html' %}
+    {% include 'include/search.html' %}
+
+    <script>
+        function delData() { //删除
+            XPage.DelData("{% url 'user:user_delete' %}");
+        }
+
+        function searchData() { //搜索
+            var json = {
+                userId: $("#userId").attr('data-id'),
+                registerStart: $("#datemin").val(),
+                registerEnd: $("#datemax").val()
+            };
+            XPage.Search(json);
+        }
+
+        $(document).ready(function () {
+            var config = {
+                title: '车主列表',
+                url: '{% url "user:user_list" %}',
+                postData: {'userId': $("#userId").attr('data-id')},
+                colNames: ['id', '用户名', '注册时间', '上次登录时间', '车辆信息', '充值记录', '提现记录', '预约记录', '是否停用', '操作'],
+                colModel: [
+                    {name: 'id', index: 'id', width: 60, key: true, hidden: true},
+                    {
+                        name: 'userName', index: 'userName', width: 60,
+                        formatter: function (cellValue, options, rowObject) {
+                            return "<a href='/user/edit/" + rowObject.id + "'>" + rowObject.userName + "</a>";
+
+                        }
+                    },
+                    {name: 'registerTime', index: 'registerTime', width: 85},
+                    {name: 'lastLoginTime', index: 'lastLoginTime', width: 85},
+                    {
+                        name: '车辆', width: 50,
+                        formatter: function (cellValue, options, rowObject) {
+                            return "<a href='/user/car/?userId=" + rowObject.id + "'>查看</a>";
+                        }
+                    },
+                    {
+                        name: '充值', width: 50,
+                        formatter: function (cellValue, options, rowObject) {
+                            return "<a href='/account/payorder/?userId=" + rowObject.id + "'>查看</a>";
+                        }
+                    },
+                    {
+                        name: '提现', width: 50,
+                        formatter: function (cellValue, options, rowObject) {
+                            return "<a href='/account/withdraworder/?userId=" + rowObject.id + "'>查看</a>";
+                        }
+                    },
+                    {
+                        name: '预约', width: 50,
+                        formatter: function (cellValue, options, rowObject) {
+                            return "<a href='/advance/?userId=" + rowObject.id + "'>查看</a>";
+                        }
+                    },
+                    {
+                        name: 'status', index: 'status', width: 50,
+                        formatter: function (cellValue, options, rowObject) {
+                            var value = (rowObject.status & 2) >> 1 == 1 ? '已停用' : '已启用';
+                            return "<span class='label label-success radius'>" + value + "</span>";
+                        }
+                    },
+                    {
+                        name: 'operation', index: 'operation', width: 60,
+                        formatter: function (cellValue, options, rowObject) {
+                            var html = '';
+                            if ((rowObject.status & 2) >> 1 == 1) {
+                                html += "<a style='text-decoration:none' onClick='setActivate(this," + rowObject.id + ")' href='javascript:;'>启用</a>"
+                            }
+                            else {
+                                html += "<a style='text-decoration:none' onClick='setDeactivate(this," + rowObject.id + ")' href='javascript:;'>停用</a> "
+                            }
+                            {#                            if ((rowObject.status & 4) >> 2 == 0) {#}
+                            {#                                html += "  <a style='text-decoration:none' onClick='setShopManager(this," + rowObject.id + ")' href='javascript:;'>设置店长</a>"#}
+                            {#                            }#}
+                            return html;
+                        }
+                    }
+                ]
+            };
+            JucheapGrid.Load(config);
+            $("#btnSearch").bind("click", searchData);
+        });
+    </script>
+
+
+    <script type="text/javascript">
+        $(function () {
+            laydate({
+                elem: '#datemin',
+                event: 'focus'
+            });
+            laydate({
+                elem: '#datemax',
+                event: 'focus'
+            });
+        });
+
+
+        function layer(name, relate_id) {
+            var title, url;
+            var height = '500px';
+
+            switch (name) {
+                case 'layer2':
+                    title = '';
+                    url = '/user/car/detail/' + relate_id;
+                    break
+                case 'layer3':
+                    title = '';
+                    url = '/user/car/detail/' + relate_id;
+                    break
+                case 'layer4':
+                    title = '预约信息';
+                    url = '/user/car/detail/' + relate_id;
+                    break
+            }
+            parent.layer.open({
+                title: title,
+                type: 2,
+                content: url,
+                area: ['800px', height],
+            });
+        }
+    </script>
+    <script type="text/javascript">
+        function setActivate(obj, id) {
+            var url = '/user/setstatus/';
+
+            parent.layer.confirm('确定要启用？', {
+                    btn: ['确定', '取消'],
+                    shade: false,
+                    closeBtn: 0
+                },
+                function () {
+                    $(obj).parents("tr").find("td[aria-describedby=table_list_operation]").prepend("<a style='text-decoration:none'  onClick='setDeactivate(this," + id + ")' href='javascript:;'>停用</a>");
+                    $(obj).parents("tr").find("td[aria-describedby=table_list_status]").html('<span class="label label-success radius">已启用</span>');
+                    $(obj).remove();
+                    parent.layer.msg('操作成功', {icon: 6, time: 1000})
+                    postData(url, {'id': id, 'opt': 'activate', 'flag': 0});
+                }
+            )
+        }
+
+        function setDeactivate(obj, id) {
+            var url = '/user/setstatus/';
+
+            parent.layer.confirm('确定要停用？', {
+                    btn: ['确定', '取消'],
+                    shade: false,
+                    closeBtn: 0
+                },
+                function () {
+                    postData(url, {'id': id, 'opt': 'activate', 'flag': 1}, function () {
+                        $(obj).parents("tr").find("td[aria-describedby=table_list_operation]").prepend("<a style='text-decoration:none'  onClick='setActivate(this," + id + ")' href='javascript:;'>启用</a>");
+                        $(obj).parents("tr").find("td[aria-describedby=table_list_status]").html('<span class="label label-success radius">已停用</span>');
+                        $(obj).remove();
+                        parent.layer.msg('操作成功', {icon: 6, time: 1000})
+                    });
+                }
+            )
+        }
+
+        function setShopManager(obj, id) {
+            var url = '/user/setstatus/';
+
+            parent.layer.confirm('确定要设置店长？', {
+                    btn: ['确定', '取消'],
+                    shade: false,
+                    closeBtn: 0
+                },
+                function () {
+                    postData(url, {'id': id, 'opt': 'shop', 'flag': 1}, function () {
+                        $("#table_list").trigger("reloadGrid");
+                        parent.layer.msg('操作成功', {icon: 6, time: 1000});
+                    });
+                }
+            )
+        }
+    </script>
+
+{% endblock %}

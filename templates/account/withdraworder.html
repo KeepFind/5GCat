@@ -1,0 +1,165 @@
+{% extends 'base/_layout_content.html' %}
+{% load staticfiles %}
+
+{% block style %}
+    <link href="{% static 'css/plugins/jqgrid/ui.jqgrid.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/H-ui.css' %}" rel="stylesheet"/>
+{% endblock %}
+
+{% block content %}
+    <div class="wrapper wrapper-content">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>提现</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <div class="form-group">
+
+                </div>
+                <div class="form-group text-center">
+                    <div class="form-inline">
+                        用户：
+                        <div class="input-group" style="width: 200px;">
+                            <input type="text" class="form-control" id="userId" data-id="{{ userId }}"
+                                   style="width: 200px;"
+                                   value="{{ userName }}"
+                                   autocomplete="off">
+                            <div class="input-group-btn">
+                                <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                </ul>
+                            </div>
+                        </div>
+                        申请日期：
+                        <input type="text" id="datemin" class="laydate-icon form-control layer-date">-
+                        <input type="text" id="datemax" class="laydate-icon form-control layer-date">
+                        <button id="btnSearch" class="btn btn btn-primary" type="button">
+                            <i class="fa fa-search"></i> 搜索
+                        </button>
+                    </div>
+                </div>
+                <div class="jqGrid_wrapper">
+                    <table id="table_list"></table>
+                    <div id="pager_list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block script %}
+    {% include 'include/jslist.html' %}
+    {% include 'include/search.html' %}
+
+    <script>
+        function searchData() { //搜索
+            var json = {
+                userId: $("#userId").attr('data-id'),
+                createStart: $("#datemin").val(),
+                createEnd: $("#datemax").val()
+            };
+            XPage.Search(json);
+        }
+
+        $(document).ready(function () {
+            var config = {
+                title: '提现列表',
+                url: '{% url "account:withdraworder_list" %}',
+                multiselect: false,
+                postData: {'userId': $("#userId").attr('data-id')},
+                colNames: ['ID', '用户', '提现金额', '手续费率', '到账类型', '到账账号', '状态', '备注', '申请时间', '操作'],
+                colModel: [
+                    {
+                        name: 'id', index: 'id', width: 30, key: true,
+                        formatter: function (cellValue, options, rowObject) {
+                            return "<a href='javascript:;'  onclick='layer(" + "\"withdraw_detail\"" + "," + rowObject.id + ")'>" + rowObject.id + "</a>";
+                        }
+                    },
+                    {
+                        name: 'userName', index: 'userName', width: 60,
+                        formatter: function (cellValue, options, rowObject) {
+                            return "<a href='/user/index/?userId=" + rowObject.userId + "'>" + rowObject.userName + "</a>";
+                        }
+                    },
+                    {name: 'wrMoney', index: 'wrMoney', width: 45},
+                    {name: 'procedureRates', index: 'procedureRates', width: 45},
+                    {name: 'accType', index: 'accType', width: 45},
+                    {name: 'accountNo', index: 'accountNo', width: 45},
+                    {name: 'orderStatus', index: 'orderStatus', width: 50},
+                    {name: 'remark', index: 'remark', width: 80},
+                    {name: 'wrTime', index: 'wrTime', width: 80},
+                    {
+                        name: 'operation', index: 'operation', width: 80,
+                        formatter: function (cellValue, options, rowObject) {
+                            return "<a style='text-decoration:none' onClick='withdraw_audit(this," + rowObject.id + ")' href='javascript:;' title='审核'>审核</a> ";
+                        }
+                    }
+                ]
+            };
+            JucheapGrid.Load(config);
+            $("#btnSearch").bind("click", searchData);
+        });
+    </script>
+
+    <script type="text/javascript">
+        laydate({
+            elem: '#datemin',
+            event: 'focus'
+        });
+        laydate({
+            elem: '#datemax',
+            event: 'focus'
+        });
+    </script>
+
+    <script type="text/javascript">
+        function layer(name, relate_id) {
+            var title, url;
+            var height = '500px';
+
+            switch (name) {
+                case 'withdraw_detail':
+                    title = '提现信息';
+                    url = '/account/withdraworder/detail/' + relate_id;
+                    break;
+            }
+            parent.layer.open({
+                title: title,
+                type: 2,
+                content: url,
+                area: ['800px', height],
+            });
+        }
+    </script>
+
+    <script type="text/javascript">
+        /*审核*/
+        function withdraw_audit(obj, id) {
+            var url = '/account/withdraworder/audit/';
+
+            parent.layer.open({
+                    btn: ['通过', '不通过', '取消'],
+                    content: '审核通过？<div style="padding: 50px; line-height: 22px; color: #fff; font-weight: 300;"></div>',
+                    shade: false,
+                    closeBtn: 0
+                },
+                function () {
+                    postData(url, {'id': id, 'flag': true}, function () {
+                        {#                    $(obj).parents("tr").find(".td-manage").prepend('<a class="c-primary" onClick="article_start(this,id)" href="javascript:;" title="申请上线">申请上线</a>');#}
+                        {#                    $(obj).parents("tr").find(".td-status").html('<span class="label label-success radius">已发布</span>');#}
+                        {#                    $(obj).remove();#}
+                        parent.layer.msg('已审核', {icon: 6, time: 1000})
+                    });
+                },
+                function () {
+                    postData(url, {'id': id, 'flag': false});
+                }
+            )
+        }
+    </script>
+
+{% endblock %}

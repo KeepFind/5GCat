@@ -1,0 +1,113 @@
+{% extends 'base/_layout_content.html' %}
+{% load staticfiles %}
+
+
+{% block content %}
+    <div class="wrapper wrapper-content">
+        <div class="row">
+            <div class="col-sm-12">
+                <form id="mainForm" method="post" class="form-horizontal">
+                    {% csrf_token %}
+                    <div class="tabs-container">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a data-toggle="tab" href="#tab-1" aria-expanded="true"> 充值推荐奖励配置</a>
+                            </li>
+                            <li class=""><a data-toggle="tab" href="#tab-2" aria-expanded="false">提现配置</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div id="tab-1" class="tab-pane active">
+                                <div class="panel-body">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">奖励级别：</label>
+                                        <div class="col-sm-8">
+                                            {{ form.REWARD_LEVEL }}
+                                            {% autoescape off %}
+                                                {{ error.REWARD_LEVEL }}
+                                            {% endautoescape %}
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">一级奖励金额：</label>
+                                        <div class="col-sm-8">
+                                            {{ form.FIRST_AWARD }}
+                                            {% autoescape off %}
+                                                {{ error.FIRST_AWARD }}
+                                            {% endautoescape %}
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">二级奖励金额：</label>
+                                        <div class="col-sm-8">
+                                            {{ form.SECOND_AWARD }}
+                                            {% autoescape off %}
+                                                {{ error.SECOND_AWARD }}
+                                            {% endautoescape %}
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">三级奖励金额：</label>
+                                        <div class="col-sm-8">
+                                            {{ form.THREE_AWARD }}
+                                            {% autoescape off %}
+                                                {{ error.THREE_AWARD }}
+                                            {% endautoescape %}
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-offset-3 col-sm-8">
+                                            <button class="btn btn-info" type="submit" id="btnSave">保存</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="tab-2" class="tab-pane">
+                                <div class="panel-body">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">提现汇率：</label>
+                                        <div class="col-sm-8">
+                                            {{ form.WITHDRAW_RATE }}
+                                            {% autoescape off %}
+                                                {{ error.WITHDRAW_RATE }}
+                                            {% endautoescape %}
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">到账天数：</label>
+                                        <div class="col-sm-8">
+                                            {{ form.WITHDRAW_HOW_DAYS }}
+                                            {% autoescape off %}
+                                                {{ error.WITHDRAW_HOW_DAYS }}
+                                            {% endautoescape %}
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-offset-3 col-sm-8">
+                                            <button class="btn btn-info" type="submit" id="btnSave">保存</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script type="text/javascript" src="{% static 'js/jquery.cookie.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/nature.ajax.js' %}"></script>
+
+    <script type="text/javascript">
+        var ajaxInfo = {
+            url: "{% url 'manage:config_edit' %}", //ajax请求url
+        };
+
+        $(".btn").click(function () {
+            Nature.Ajax(ajaxInfo);
+            return false;
+        });
+    </script>
+{% endblock %}

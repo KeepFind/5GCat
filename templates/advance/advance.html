@@ -1,0 +1,137 @@
+{% extends 'base/_layout_content.html' %}
+{% load staticfiles %}
+
+{% block content %}
+    <div class="wrapper wrapper-content">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>预约信息</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <div class="form-group">
+                </div>
+                <div class="form-group text-center">
+                    <div class="form-inline">
+                        用户：
+                        <div class="input-group">
+                            <input type="text" class="input form-control" id="userId" data-id="{{ userId }}"
+                                   value="{{ userName }}"
+                                   autocomplete="off">
+                            <div class="input-group-btn">
+                                <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                </ul>
+                            </div>
+                        </div>
+                        门店：
+                        <div class="input-group">
+                            <input type="text" class="input form-control" id="shopNo" data-id="{{ shopNo }}"
+                                   value="{{ shopName }}">
+                            <div class="input-group-btn">
+                                <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                </ul>
+                            </div>
+                        </div>
+                        {#                         预约时间：#}
+                        {#                        <input type="text" id="datemin" class="laydate-icon form-control layer-date">-#}
+                        {#                        <input type="text" id="datemax" class="laydate-icon form-control layer-date">#}
+                        <button id="btnSearch" class="btn btn btn-primary" type="button">
+                            <i class="fa fa-search"></i> 搜索
+                        </button>
+                    </div>
+                </div>
+                <div class="jqGrid_wrapper">
+                    <table id="table_list"></table>
+                    <div id="pager_list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block script %}
+    {% include 'include/jslist.html' %}
+    {% include 'include/search.html' %}
+
+    <script>
+        function searchData() { //搜索
+            var json = {
+                userId: $("#userId").attr('data-id'),
+                shopNo: $("#shopNo").attr('data-id')
+            };
+            XPage.Search(json);
+        }
+
+        $(document).ready(function () {
+            var config = {
+                title: '预约列表',
+                url: '{% url "advance:advance_list" %}',
+                multiselect: false,
+                postData: {'userId': $("#userId").attr('data-id')},
+                colNames: ['id', '预约号', '用户', '预约类型', '门店', '预约套餐名称', '预约套餐编号', '是否取消', '预约时间', '创建时间'],
+                colModel: [
+                    {name: 'id', index: 'id', width: 60, key: true, hidden: true},
+                    {
+                        name: 'advanceNo', index: 'advanceNo', width: 60,
+                        formatter: function (cellValue, options, rowObject) {
+                            return "<a href='javascript:void(0)'  onclick='layer(" + "\"advance\"" + "," + rowObject.id + ")'>" + rowObject.advanceNo + "</a>";
+                        }
+                    },
+                    {
+                        name: 'userName', index: 'userName', width: 60,
+                        formatter: function (cellValue, options, rowObject) {
+                            return "<a href='/user/index/?userId=" + rowObject.userId + "'>" + rowObject.userName + "</a>";
+                        }
+                    },
+                    {name: 'type', index: 'type', width: 50},
+                    {name: 'shopName', index: 'shopName', width: 100},
+                    {name: 'packageName', index: 'type', width: 60},
+                    {name: 'packageNo', index: 'status', width: 60},
+{#                    {#}
+{#                        name: '处理状态', width: 40,#}
+{#                        formatter: function (cellValue, options, rowObject) {#}
+{#                            var value = (rowObject.status & 2) >> 1 == 1 ? '已处理' : '未处理';#}
+{#                            return "<span class='label label-success radius'>" + value + "</span>";#}
+{#                        }#}
+{#                    },#}
+                    {
+                        name: '取消状态', width: 40,
+                        formatter: function (cellValue, options, rowObject) {
+                            var value = (rowObject.status & 4) >> 2 == 1 ? '已取消' : '正常';
+                            return "<span class='label label-success radius'>" + value + "</span>";
+                        }
+                    },
+                    {name: 'orderTime', index: 'advanceNo', width: 80},
+                    {name: 'createdTime', index: 'createdTime', width: 80},
+                ]
+            };
+            JucheapGrid.Load(config);
+            $("#btnSearch").bind("click", searchData);
+        });
+    </script>
+
+    <script type="text/javascript">
+        function layer(name, relate_id) {
+            var title, url;
+            var height = '500px';
+
+            switch (name) {
+                case 'advance':
+                    title = '预约信息';
+                    url = '/advance/detail/' + relate_id;
+                    break;
+            }
+            parent.layer.open({
+                title: title,
+                type: 2,
+                content: url,
+                area: ['800px', height],
+            });
+        }
+    </script>
+
+{% endblock %}

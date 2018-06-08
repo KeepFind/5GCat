@@ -1,0 +1,18 @@
+[property]
+#您在控制台创建的Topic
+Topic=test2-hlg
+
+#公测集群URL
+URL=http://publictest-rest.ons.aliyun.com
+
+#阿里云官网身份验证访问码
+Ak=QkVoJuRknaC96qVa
+
+#阿里云身份验证密钥
+Sk=S4Y8ZwTKBbT50BNEEGp0DnwOZpSVwM
+
+#MQ控制台创建的Producer ID
+ProducerID=PID-TEST240
+
+#MQ控制台创建的Consumer ID
+ConsumerID=xxx

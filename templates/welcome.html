@@ -1,0 +1,385 @@
+{% extends 'base/_layout_content.html' %}
+{% load staticfiles %}
+
+{% block style %}
+    <!-- Morris -->
+    <link href="{% static 'css/plugins/morris/morris-0.4.3.min.css' %}" rel="stylesheet">
+    <!-- Gritter -->
+    <link href="{% static 'js/plugins/gritter/jquery.gritter.css' %}" rel="stylesheet">
+{% endblock %}
+
+
+{% block content %}
+    <div class="wrapper wrapper-content">
+        <div class="row">
+            <div class="col-sm-3">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <span class="label label-danger pull-right">今天</span>
+                        <h5>注册用户</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <h1 class="no-margins" id="regist">0</h1>
+                        <div class="stat-percent font-bold text-danger">
+                            <span id="registRate">0%</span> <i class="fa fa-level-up"></i>
+                        </div>
+                        <small>新用户</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <span class="label label-success pull-right">今天</span>
+                        <h5>活跃用户</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <h1 class="no-margins" id="dau">0</h1>
+                        <div class="stat-percent font-bold text-success">
+                            <span id="dauRate">0%</span> <i class="fa fa-level-up"></i>
+                        </div>
+                        <small>用户</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-3">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <span class="label label-info pull-right">今天</span>
+                        <h5>充值</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <h1 class="no-margins" id="pay">0</h1>
+                        <div class="stat-percent font-bold text-info">
+                            <span id="payRate">0%</span> <i class="fa fa-level-up"></i>
+                        </div>
+                        <small>总金额</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <span class="label label-primary pull-right">今天</span>
+                        <h5>提现</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <h1 class="no-margins" id="withdraw">0</h1>
+                        <div class="stat-percent font-bold text-navy">
+                            <span id="withdrawRate">0</span> <i class="fa fa-level-up"></i>
+                        </div>
+                        <small>总金额</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>用户</h5>
+                        <div class="pull-right">
+                            <div class="btn-group">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row">
+                            <div class="col-sm-9">
+                                <div class="flot-chart">
+                                    <div class="flot-chart-content" id="flot-dashboard-chart"></div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <ul class="stat-list">
+                                    <li>
+                                        <h2 class="no-margins" id="m_regist">0</h2>
+                                        <small>本月注册用户</small>
+                                        <div class="stat-percent">
+                                            <span id="m_registRate">0%</span> <i class="fa fa-level-up text-navy"></i>
+                                        </div>
+                                        <div class="progress progress-mini">
+{#                                            <div style="width: 60%;" class="progress-bar"></div>#}
+                                        </div>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ibox-title">
+                        <h5>充值提现</h5>
+                        <div class="pull-right">
+                            <div class="btn-group">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row">
+                            <div class="col-sm-9">
+                                <div class="flot-chart">
+                                    <div class="flot-chart-content" id="flot-dashboard-chart2"></div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <ul class="stat-list">
+                                    <li>
+                                        <h2 class="no-margins" id="m_pay">0</h2>
+                                        <small>本月充值总金额</small>
+                                        <div class="stat-percent">
+                                            <span id="m_payRate">0%</span> <i class="fa fa-level-up text-navy"></i>
+                                        </div>
+                                        <div class="progress progress-mini">
+{#                                            <div style="width: 48%;" class="progress-bar"></div>#}
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <h2 class="no-margins" id="m_withdraw">0</h2>
+                                        <small>本月提现总金额</small>
+                                        <div class="stat-percent">
+                                            <span id="m_withdrawRate">0%</span> <i class="fa fa-level-up text-navy"></i>
+                                        </div>
+                                        <div class="progress progress-mini">
+{#                                            <div style="width: 22%;" class="progress-bar"></div>#}
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <!-- Flot -->
+    <script src="{% static 'js/plugins/flot/jquery.flot.js' %}"></script>
+    <script src="{% static 'js/plugins/flot/jquery.flot.tooltip.min.js' %}"></script>
+    <script src="{% static 'js/plugins/flot/jquery.flot.spline.js' %}"></script>
+    <script src="{% static 'js/plugins/flot/jquery.flot.resize.js' %}"></script>
+    <script src="{% static 'js/plugins/flot/jquery.flot.pie.js' %}"></script>
+    <script src="{% static 'js/plugins/flot/jquery.flot.symbol.js' %}"></script>
+
+    <!-- jQuery UI -->
+    <script src="{% static 'js/plugins/jquery-ui/jquery-ui.min.js' %}"></script>
+
+
+    <script>
+        $(document).ready(function () {
+            postData("{% url 'month_userstats'%}", {}, function (res) {
+                var dataset = [
+                    {
+                        label: "注册数",
+                        data: gd(res.data),
+                        color: "#1ab394",
+                        bars: {
+                            show: true,
+                            align: "center",
+                            barWidth: 24 * 60 * 60 * 600,
+                            lineWidth: 0
+                        }
+                    },
+                ];
+
+                var options = {
+                    xaxis: {
+                        mode: "time",
+                        tickSize: [3, "day"],
+                        tickLength: 0,
+                        axisLabel: "Date",
+                        axisLabelUseCanvas: true,
+                        axisLabelFontSizePixels: 12,
+                        axisLabelFontFamily: 'Arial',
+                        axisLabelPadding: 10,
+                        color: "#838383"
+                    },
+                    yaxes: [{
+                        position: "left",
+                        {#                        max: 200,#}
+                        tickDecimals: 0,
+                        color: "#838383",
+                        axisLabelUseCanvas: true,
+                        axisLabelFontSizePixels: 12,
+                        axisLabelFontFamily: 'Arial',
+                        axisLabelPadding: 3
+                    }, {
+                        position: "right",
+                        clolor: "#838383",
+                        axisLabelUseCanvas: true,
+                        axisLabelFontSizePixels: 12,
+                        axisLabelFontFamily: ' Arial',
+                        axisLabelPadding: 67
+                    }
+                    ],
+                    legend: {
+                        noColumns: 1,
+                        labelBoxBorderColor: "#000000",
+                        position: "nw"
+                    },
+                    grid: {
+                        hoverable: false,
+                        borderWidth: 0,
+                        color: '#838383'
+                    }
+                };
+
+                $.plot($("#flot-dashboard-chart"), dataset, options);
+            });
+
+            postData("{% url 'month_orderstats'%}", {}, function (res) {
+                var dataset = [
+                    {
+                        label: "提现",
+                        data: gd(res.data.withdrawAmounts),
+                        color: "#1ab394",
+                        bars: {
+                            show: true,
+                            align: "center",
+                            barWidth: 24 * 60 * 60 * 600,
+                            lineWidth: 0
+                        }
+                    },
+                    {
+                        label: "充值",
+                        data: gd(res.data.payAmounts),
+                        yaxis: 2,
+                        color: "#464f88",
+                        lines: {
+                            lineWidth: 1,
+                            show: true,
+                            fill: true,
+                            fillColor: {
+                                colors: [{
+                                    opacity: 0.2
+                                }, {
+                                    opacity: 0.2
+                                }]
+                            }
+                        },
+                        splines: {
+                            show: false,
+                            tension: 0.6,
+                            lineWidth: 1,
+                            fill: 0.1
+                        },
+                    }
+                ];
+
+                var options = {
+                    xaxis: {
+                        mode: "time",
+                        tickSize: [3, "day"],
+                        tickLength: 0,
+                        axisLabel: "Date",
+                        axisLabelUseCanvas: true,
+                        axisLabelFontSizePixels: 12,
+                        axisLabelFontFamily: 'Arial',
+                        axisLabelPadding: 10,
+                        color: "#838383"
+                    },
+                    yaxes: [{
+                        position: "left",
+                        {#                        max: 200,#}
+                        tickDecimals: 0,
+                        color: "#838383",
+                        axisLabelUseCanvas: true,
+                        axisLabelFontSizePixels: 12,
+                        axisLabelFontFamily: 'Arial',
+                        axisLabelPadding: 3
+                    }, {
+                        position: "right",
+                        clolor: "#838383",
+                        axisLabelUseCanvas: true,
+                        axisLabelFontSizePixels: 12,
+                        axisLabelFontFamily: ' Arial',
+                        axisLabelPadding: 67
+                    }
+                    ],
+                    legend: {
+                        noColumns: 1,
+                        labelBoxBorderColor: "#000000",
+                        position: "nw"
+                    },
+                    grid: {
+                        hoverable: false,
+                        borderWidth: 0,
+                        color: '#838383'
+                    }
+                };
+
+                $.plot($("#flot-dashboard-chart2"), dataset, options);
+            });
+
+            function gd(data) {
+                for (i in data) {
+                    data[i][0] = new Date(data[i][0]).getTime()
+                }
+                return data;
+            }
+        });
+    </script>
+
+    <script type="text/javascript">
+        $(function () {
+            postData("{% url 'mainstats' %}", {}, function (res) {
+                var data = res.data;
+
+                var ids = ['regist', 'dau', 'pay', 'withdraw'];
+                var values = [data.registCount, data.dau, data.payAmount, data.withdrawAmount];
+                setValue(ids, values);
+
+                ids = ['registRate', 'dauRate', 'payRate', 'withdrawRate'];
+                values = [data.registRate, data.dauRate, data.payRate, data.withdrawRate];
+                setValue(ids, values, true);
+
+                setUpDown(ids, values);
+            });
+        });
+    </script>
+
+    <script type="text/javascript">
+        $(function () {
+            postData("{% url 'month_totalstats' %}", {}, function (res) {
+                var data = res.data;
+
+                var ids = ['m_regist', 'm_pay', 'm_withdraw'];
+                var values = [data.registCount, data.payAmount, data.withdrawAmount];
+                setValue(ids, values);
+
+                ids = ['m_registRate', 'm_payRate', 'm_withdrawRate'];
+                values = [data.registRate, data.payRate, data.withdrawRate];
+                setValue(ids, values, true);
+
+                setUpDown(ids, values);
+            });
+        });
+
+        function setValue(ids, values, add_postfix) {
+            for (i in ids) {
+                if (add_postfix) {
+                    $("#" + ids[i]).html(Math.abs(values[i]) + '%');
+                }
+                else {
+                    $("#" + ids[i]).html(values[i]);
+                }
+            }
+        }
+
+        function setUpDown(ids, values) {
+            for (i in ids) {
+                if (values[i] < 0) {
+                    $("#" + ids[i]).next().removeClass('fa-level-up').addClass('fa-level-down')
+                }
+            }
+        }
+    </script>
+
+
+
+{% endblock %}
+
+
+

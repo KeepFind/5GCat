@@ -1,0 +1,200 @@
+{% extends 'base/_layout_content.html' %}
+{% load staticfiles %}
+{% load settings_extras %}
+
+{% block content %}
+    <div class="wrapper wrapper-content">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>编辑用户</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <form method="post" class="form-horizontal">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="col-sm-1-5 control-label">用户名：</label>
+                        <div class="col-sm-9-5">
+                            {{ form.userName }}
+                            {% autoescape off %}
+                                {{ error.userName }}
+                            {% endautoescape %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-1-5 control-label">奖励金额：</label>
+                        <div class="col-sm-9-5">
+                            {{ form.awardBalance }}
+                            {% autoescape off %}
+                                {{ error.awardBalance }}
+                            {% endautoescape %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-1-5 control-label">充值金额：</label>
+                        <div class="col-sm-9-5">
+                            {{ form.rechargeBalance }}
+                            {% autoescape off %}
+                                {{ error.rechargeBalance }}
+                            {% endautoescape %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-1-5 control-label">推荐人：</label>
+                        <div class="col-sm-9-5">
+                            {{ form.referralUserName }}
+                            {% autoescape off %}
+                                {{ error.referralUserName }}
+                            {% endautoescape %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-1-5 control-label">推荐码：</label>
+                        <div class="col-sm-9-5">
+                            {{ form.referralCode }}
+                            {% autoescape off %}
+                                {{ error.referralCode }}
+                            {% endautoescape %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-1-5 control-label">默认门店：</label>
+                        <div class="col-sm-9-5">
+                            <div class="input-group" style="width: 100%">
+                                <input type="text" class="form-control" id="shopId"
+                                       data-id="{{ form.defaultShopId.value| default_if_none:'' }}"
+                                       value="{{ form.shopName|default_if_none:'' }}" required>
+                                <div class="input-group-btn">
+                                    <button type="button" class="btn btn-white dropdown-toggle" data-toggle="">
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                    </ul>
+                                </div>
+                                <input type="hidden" name="defaultShopId">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-1-5 control-label">头像：</label>
+                        <div class="col-sm-9-5">
+                            <div class="photos">
+                                {% if model.userImg %}
+                                    <img alt="image" class="feed-photo" src="{% settings_value 'QINIU_DOMAIN' %}{{ model.userImg }}">
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-1-5 control-label">昵称：</label>
+                        <div class="col-sm-9-5">
+                            {{ form.nickname }}
+                            {% autoescape off %}
+                                {{ error.nickname }}
+                            {% endautoescape %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-1-5 control-label">性别：</label>
+                        <div class="col-sm-9-5">
+                            {{ form.gender }}
+                            {% autoescape off %}
+                                {{ error.gender }}
+                            {% endautoescape %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-1-5 control-label">城市：</label>
+                        <div class="col-sm-9-5">
+                            {{ form.city }}
+                            {% autoescape off %}
+                                {{ error.city }}
+                            {% endautoescape %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-1-5 control-label">年龄：</label>
+                        <div class="col-sm-9-5">
+                            {{ form.age }}
+                            {% autoescape off %}
+                                {{ error.age }}
+                            {% endautoescape %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-1-5 control-label">身高：</label>
+                        <div class="col-sm-9-5">
+                            {{ form.height }}
+                            {% autoescape off %}
+                                {{ error.height }}
+                            {% endautoescape %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-1-5 control-label">体重：</label>
+                        <div class="col-sm-9-5">
+                            {{ form.weight }}
+                            {% autoescape off %}
+                                {{ error.weight }}
+                            {% endautoescape %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-1-5 control-label">职业：</label>
+                        <div class="col-sm-9-5">
+                            {{ form.job }}
+                            {% autoescape off %}
+                                {{ error.job }}
+                            {% endautoescape %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-1-5 control-label">兴趣爱好：</label>
+                        <div class="col-sm-9-5">
+                            {{ form.hobby }}
+                            {% autoescape off %}
+                                {{ error.hobby }}
+                            {% endautoescape %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-3 col-sm-9-5">
+                            <button class="btn btn-info" type="submit" id="btnSave">保存</button>
+                            <button class="btn btn-white" type="button" id="btnBack" data-type="url">返回</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script type="text/javascript" src="{% static 'js/plugins/suggest/bootstrap-suggest.min.js' %}"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            //门店列表
+            $("#shopId").bsSuggest({
+                url: "{% url 'shop:shop_selector' %}?shopName=",
+                effectiveFields: ["shopName"],
+                searchFields: ["shopName"],
+                getDataMethod: "url",
+                idField: "shopId",
+                keyField: "shopName",
+                delay: 3000
+            });
+        })
+    </script>
+
+    <script type="text/javascript">
+        $("#btnSave").bind("click", function () {
+            var shopId = $('#shopId').attr('data-id');
+            $('input[name=defaultShopId]').val(shopId);
+        });
+    </script>
+{% endblock %}

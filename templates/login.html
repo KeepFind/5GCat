@@ -1,0 +1,87 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>G汽猫运营平台</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="author" content="Irene"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link href="{% static 'css/ParticleMotion.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/Validform.css' %}" rel="stylesheet"/>
+
+    <style>
+        .Validform_error {
+            background: rgba(227, 66, 40, 0.1);
+            border: 1px solid rgba(227, 66, 40, 0.5);
+            color: rgba(227, 66, 40, 1);
+        }
+
+        .Validform_wrong {
+            color: #e34228;
+        }
+
+        .Validform_checktip {
+            position: absolute;
+            top: 80px;
+            left: 35px;
+        }
+
+        .Validform_checktip.Validform_right {
+            left: 310px;
+            top: 45px;
+        }
+    </style>
+
+    <script language="JavaScript">
+        if (window != top)
+            top.location.href = location.href;
+    </script>
+</head>
+<body>
+<!-- particlemotion.js container -->
+<div id="ParticleMotion"></div>
+<section class="wrapper">
+    <div id="divMessages"></div>
+    <form method="post" class="card">
+        {% csrf_token %}
+        <div class="login_bg">
+            <h1 class="title">G汽猫</h1>
+            <h2 class="description">运营平台</h2>
+            <p class="error">
+                <label id="lblError"></label>
+            </p>
+            <ul>
+                <li class="user_txt">
+                    <span></span>
+                    {{ form.username }}
+                    {% autoescape off %}
+                        {{ error.username }}
+                    {% endautoescape %}
+                </li>
+                <li class="psw_txt">
+                    <span></span>
+                    {{ form.password }}
+                    {% autoescape off %}
+                        {{ error.password }}
+                    {% endautoescape %}
+                </li>
+                <li class="foget">&nbsp;</li>
+                <li>
+                    <input type="submit" id="btnLogin" value="登录" class="btn"/>
+                </li>
+            </ul>
+        </div>
+    </form>
+</section>
+
+<script src="{% static 'js/ParticleMotion.js' %}"></script>
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/page/content.js' %}"></script>
+
+</body>
+</html>

@@ -1,0 +1,97 @@
+{% extends 'base/_layout_content.html' %}
+{% load staticfiles %}
+
+
+{% block content %}
+    <div class="wrapper wrapper-content">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>添加管理员</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <form method="post" class="form-horizontal">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="col-sm-1-5 control-label">用户名：</label>
+                        <div class="col-sm-9-5">
+                            {{ form.username }}
+                            {% autoescape off %}
+                                {{ error.username }}
+                            {% endautoescape %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-1-5 control-label">门店：</label>
+                        <div class="col-sm-9-5">
+                            <div class="input-group" style="width: 100%">
+                                <input type="text" class="form-control" id="shopNo"
+                                       data-id="{{ form.shopNo.value }}"
+                                       value="{{ form.shopName }}">
+                                <div class="input-group-btn">
+                                    <button type="button" class="btn btn-white dropdown-toggle" data-toggle="">
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" name="shopNo">
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-1-5 control-label">密码：</label>
+                        <div class="col-sm-9-5 disabled">
+                            {{ form.password }}
+                            {% autoescape off %}
+                                {{ error.password }}
+                            {% endautoescape %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-1-5 control-label">确认密码：</label>
+                        <div class="col-sm-9-5 disabled">
+                            {{ form.password2 }}
+                            {% autoescape off %}
+                                {{ error.password2 }}
+                            {% endautoescape %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-3 col-sm-9-5">
+                            <button class="btn btn-info" type="submit" id="btnSave">保存</button>
+                            <button class="btn btn-white" type="button" id="btnBack" data-type="url">返回</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script type="text/javascript" src="{% static 'js/plugins/suggest/bootstrap-suggest.min.js' %}"></script>
+
+    <script type="text/javascript">
+        $("#shopNo").bsSuggest({
+            url: "{% url 'shop:shop_selector' %}?shopName=",
+            effectiveFields: ["shopName"],
+            searchFields: ["shopName"],
+            getDataMethod: "url",
+            idField: "shopNo",
+            keyField: "shopName",
+            delay: 3000
+        });
+    </script>
+
+    <script type="text/javascript">
+        $("#btnSave").bind("click", function () {
+            var shopNo = $('#shopNo').attr('data-id');
+            $('input[name=shopNo]').val(shopNo);
+        });
+    </script>
+{% endblock %}

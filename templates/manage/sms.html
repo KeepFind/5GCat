@@ -1,0 +1,91 @@
+{% extends 'base/_layout_content.html' %}
+{% load staticfiles %}
+
+
+{% block content %}
+    <div class="wrapper wrapper-content">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>短信信息</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <div class="form-group">
+                </div>
+                <div class="form-group text-center">
+                </div>
+                <div class="jqGrid_wrapper">
+                    <table id="table_list"></table>
+                    <div id="pager_list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block script %}
+    {% include 'include/jslist.html' %}
+
+    <script>
+        function searchData() { //搜索
+            var json = {};
+            XPage.Search(json);
+        }
+
+        $(document).ready(function () {
+            var config = {
+                title: '短信列表',
+                url: '{% url "manage:sms_list" %}',
+                multiselect: false,
+                postData: {'raId': $("#raId").attr('data-id')},
+                colNames: ['id', '手机号', '内容', '是否发送成功', '发送时间'],
+                colModel: [
+                    {name: 'id', index: 'id', width: 60, key: true, hidden: true},
+                    {
+                        name: 'mobile', index: 'mobile', width: 40,
+                        formatter: function (cellValue, options, rowObject) {
+                            return "<a href='javascript:void(0)'  onclick='layer(" + "\"sms\"" + "," + rowObject.id + ")'>" + rowObject.mobile + "</a>";
+
+                        }
+                    },
+                    {name: 'contents', index: 'contents', width: 200},
+                    {
+                        name: 'success', index: 'success', width: 40,
+                        formatter: function (cellValue, options, rowObject) {
+                            return rowObject.success == 1 ? '是' : '否';
+
+                        }
+                    },
+                    {name: 'sendTime', index: 'sendTime', width: 80},
+                ]
+            };
+            JucheapGrid.Load(config);
+            $("#btnSearch").bind("click", searchData);
+        });
+    </script>
+
+    <script type="text/javascript">
+        function layer(name, relate_id) {
+            var title, url;
+            var height = '500px';
+
+            switch (name) {
+                case 'sms':
+                    title = '短信信息';
+                    url = '/manage/sms/detail/' + relate_id;
+                    break;
+            }
+            parent.layer.open({
+                title: title,
+                type: 2,
+                content: url,
+                area: ['800px', height],
+            });
+        }
+    </script>
+
+{% endblock %}

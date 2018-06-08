@@ -1,0 +1,144 @@
+{% extends 'base/_layout_content.html' %}
+{% load staticfiles %}
+
+{% block content %}
+    <div class="wrapper wrapper-content">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>门店管理员信息</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <div class="form-group">
+                    <button id="btnAdd" type="button" class="btn btn-primary " onclick="addModel()"><i
+                            class="fa fa-check"></i>&nbsp;添加
+                    </button>
+                    <button id="btnDel" type="button" class="btn btn-danger " onclick="delData()">
+                        <i class="fa fa-dedent"></i>&nbsp;&nbsp;<span class="bold">删除</span>
+                    </button>
+                </div>
+                <div class="form-group text-center">
+                    <div class="form-inline">
+                        门店：
+                        <div class="input-group">
+                            <input type="text" class="input form-control" id="shopNo" data-id="{{ shopNo }}"
+                                   value="{{ shopName }}"
+                                   autocomplete="off">
+                            <div class="input-group-btn">
+                                <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                </ul>
+                            </div>
+                        </div>
+                        创建日期：
+                        <input type="text" id="datemin" class="laydate-icon form-control layer-date">-
+                        <input type="text" id="datemax" class="laydate-icon form-control layer-date">
+                        <button id="btnSearch" class="btn btn btn-primary" type="button">
+                            <i class="fa fa-search"></i> 搜索
+                        </button>
+                    </div>
+                </div>
+                <div class="jqGrid_wrapper">
+                    <table id="table_list"></table>
+                    <div id="pager_list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block script %}
+    {% include 'include/jslist.html' %}
+    {% include 'include/search.html' %}
+
+    <script>
+        function addModel() {
+            $("#btnAdd").button("loading");
+            window.location.href = "{% url 'shop:shopmanager_add' %}";
+        }
+        function delData() { //删除
+            XPage.DelData("{% url 'shop:shopmanager_delete' %}");
+        }
+
+        function searchData() { //搜索
+            var json = {
+                shopNo: $("#shopNo").attr('data-id'),
+                registerStart: $("#datemin").val(),
+                registerEnd: $("#datemax").val()
+            };
+            XPage.Search(json);
+        }
+
+        $(document).ready(function () {
+            var config = {
+                title: '门店管理员列表',
+                url: '{% url "shop:shopmanager_list" %}',
+                postData: {'shopId': $("#shopId").attr('data-id')},
+                colNames: ['id', '用户名', '门店', '注册时间'],
+                colModel: [
+                    {name: 'id', index: 'id', width: 60, key: true, hidden: true},
+                    {
+                        name: 'username', index: 'username', width: 60,
+                        {#                        formatter: function (cellValue, options, rowObject) {#}
+                        {#                            return "<a href='/user/edit/" + rowObject.id + "/'>" + rowObject.userName + "</a>";#}
+                        {##}
+                        {#                        }#}
+                    },
+                    {
+                        name: 'shopName', index: 'shopName', width: 60,
+                        {#                        formatter: function (cellValue, options, rowObject) {#}
+                        {#                            return "<a href='/shop/shop/?shopId=" + rowObject.shopId + "/'>" + rowObject.shopName + "</a>";#}
+                        {#                        }#}
+                    },
+                    {name: 'date_joined', index: 'date_joined', width: 80},
+                    {#                    {#}
+                    {#                        name: 'operation', index: 'operation', width: 70,#}
+                    {#                        formatter: function (cellValue, options, rowObject) {#}
+                    {#                            var html = '';#}
+                    {#                            if ((rowObject.status & 4) >> 2 == 1) {#}
+                    {#                                html += "<a style='text-decoration:none' onClick='setShopManager(this," + rowObject.id + ")' href='javascript:;'>取消店长</a>"#}
+                    {#                            }#}
+                    {#                            return html;#}
+                    {#                        }#}
+                    {#                    }#}
+                ]
+            };
+            JucheapGrid.Load(config);
+            $("#btnSearch").bind("click", searchData);
+        });
+    </script>
+
+    <script type="text/javascript">
+        laydate({
+            elem: '#datemin',
+            event: 'focus'
+        });
+        laydate({
+            elem: '#datemax',
+            event: 'focus'
+        });
+    </script>
+
+    <script type="text/javascript">
+        function setShopManager(obj, id) {
+            var url = '/user/setstatus/';
+
+            parent.layer.confirm('确定要取消店长？', {
+                    btn: ['确定', '取消'],
+                    shade: false,
+                    closeBtn: 0
+                },
+                function () {
+                    postData(url, {'id': id, 'opt': 'shop', 'flag': 0}, function () {
+                        $("#table_list").trigger("reloadGrid");
+                        parent.layer.msg('操作成功', {icon: 6, time: 1000});
+                    });
+                }
+            )
+        }
+    </script>
+
+{% endblock %}

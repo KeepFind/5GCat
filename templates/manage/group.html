@@ -1,0 +1,93 @@
+{% extends 'base/_layout_content.html' %}
+{% load staticfiles %}
+
+{% block style %}
+    <link href="{% static 'css/plugins/jqgrid/ui.jqgrid.css' %}" rel="stylesheet"/>
+{% endblock %}
+
+{% block content %}
+    <div class="wrapper wrapper-content">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>角色信息</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <div class="form-group">
+                    <button id="btnAdd" type="button" class="btn btn-primary " onclick="addModel()"><i
+                            class="fa fa-check"></i>&nbsp;添加
+                    </button>
+                    <button id="btnDel" type="button" class="btn btn-danger " onclick="delData()">
+                        <i class="fa fa-dedent"></i>&nbsp;&nbsp;<span class="bold">删除</span>
+                    </button>
+                </div>
+                <div class="form-group">
+{#                    <div class="input-group">#}
+{#                        <input id="txtSearchKey" type="text" class="input form-control" placeholder="输入名称查询"/>#}
+{#                        <span class="input-group-btn">#}
+{#                        <button id="btnSearch" class="btn btn btn-primary" type="button"> <i class="fa fa-search"></i> 搜索</button>#}
+{#                    </span>#}
+{#                    </div>#}
+                </div>
+
+                <div class="jqGrid_wrapper">
+                    <table id="table_list"></table>
+                    <div id="pager_list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block script %}
+    {% include 'include/jslist.html' %}
+
+    <script>
+        function addModel() {
+            $("#btnAdd").button("loading");
+            window.location.href = "{% url 'manage:group_add' %}";
+        }
+
+        function delData() { //删除
+            XPage.DelData("{% url 'manage:group_delete' %}",'确定要删除？(相关角色权限与用户角色将删除)');
+        }
+
+        function searchData() { //搜索
+            var json = {
+                keywords: $("#txtSearchKey").val()
+            };
+            XPage.Search(json);
+        }
+
+        $(document).ready(function () {
+            var config = {
+                title: '角色列表',
+                url: '{% url "manage:group_list" %}',
+                colNames: ['id', '名称'],
+                colModel: [
+                    {name: 'id', index: 'id', width: 60, key: true, hidden: true},
+                    {
+                        name: 'name', index: 'name', width: 60,
+                        formatter: function (cellValue, options, rowObject) {
+                            return "<a href='/manage/group/edit/" + rowObject.id + "'>" + rowObject.name + "</a>";
+
+                        }
+                    },
+                ]
+            };
+            JucheapGrid.Load(config);
+            $("#btnSearch").bind("click", searchData);
+        });
+    </script>
+
+
+    <script type="text/javascript">
+
+
+    </script>
+
+{% endblock %}

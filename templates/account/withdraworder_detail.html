@@ -1,0 +1,85 @@
+{% extends 'base/_layout_content.html' %}
+{% load staticfiles %}
+
+{% block content %}
+    <div class="wrapper wrapper-content">
+        <form method="post" class="form-horizontal">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">用户：</label>
+                <div class="col-sm-8 disabled">
+                    <input class="form-control" type="text" readonly value="{{ model.userName }}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">提现金额：</label>
+                <div class="col-sm-8 disabled">
+                    <input class="form-control" type="text" readonly value="{{ model.wrMoney }}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">手续费率：</label>
+                <div class="col-sm-8 disabled">
+                    <input class="form-control" type="text" readonly value="{{ model.procedureRates }}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">到账类型：</label>
+                <div class="col-sm-8 disabled">
+                    <input class="form-control" type="text" readonly value="{{ model.accType }}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">到账账号：</label>
+                <div class="col-sm-8 disabled">
+                    <input class="form-control" type="text" readonly value="{{ model.accountNo }}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">银行名称：</label>
+                <div class="col-sm-8 disabled">
+                    <input class="form-control" type="text" readonly value="{{ model.bankName | default_if_none:'' }}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">银行卡类型：</label>
+                <div class="col-sm-8 disabled">
+                    <input class="form-control" type="text" readonly value="{{ model.cardType| default_if_none:'' }}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">持卡人：</label>
+                <div class="col-sm-8 disabled">
+                    <input class="form-control" type="text" readonly
+                           value="{{ model.cardholder | default_if_none:'' }}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">申请时间：</label>
+                <div class="col-sm-8 disabled">
+                    <input class="form-control" type="text" readonly value="{{ model.wrTime }}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">订单状态：</label>
+                <div class="col-sm-8 disabled">
+                    <input class="form-control" type="text" readonly value="{{ model.orderStatus }}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">第三方订单号：</label>
+                <div class="col-sm-8 disabled">
+                    <input class="form-control" type="text" readonly
+                           value="{{ model.channelNo | default_if_none:'' }}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">备注：</label>
+                <div class="col-sm-8 disabled">
+                    <textarea class="form-control" type="text"
+                              readonly>{{ model.remark | default_if_none:'' }}</textarea>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+

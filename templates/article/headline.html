@@ -1,0 +1,115 @@
+{% extends 'base/_layout_content.html' %}
+{% load staticfiles %}
+
+
+{% block content %}
+    <div class="wrapper wrapper-content">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>头条信息</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <div class="form-group">
+                    <button id="btnAdd" type="button" class="btn btn-primary " onclick="addModel()"><i
+                            class="fa fa-check"></i>&nbsp;添加
+                    </button>
+                    <button id="btnDel" type="button" class="btn btn-danger " onclick="delData()">
+                        <i class="fa fa-dedent"></i>&nbsp;&nbsp;<span class="bold">删除</span>
+                    </button>
+                </div>
+                <div class="form-group text-center">
+                    <div class="form-inline">
+                    </div>
+                </div>
+                <div class="jqGrid_wrapper">
+                    <table id="table_list"></table>
+                    <div id="pager_list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block script %}
+    {% include 'include/jslist.html' %}
+
+    <script>
+        function addModel() {
+            $("#btnAdd").button("loading");
+            window.location.href = "{% url 'article:headline_add' %}";
+        }
+
+        function delData() { //删除
+            XPage.DelData("{% url 'article:headline_delete' %}");
+        }
+
+        function searchData() { //搜索
+            var json = {};
+            XPage.Search(json);
+        }
+
+        $(document).ready(function () {
+            var config = {
+                title: '头条列表',
+                url: '{% url "article:headline_list" %}',
+                colNames: ['id', '标题', '是否置顶', '创建时间', '操作'],
+                colModel: [
+                    {name: 'id', index: 'id', width: 60, key: true, hidden: true},
+                    {
+                        name: 'title', index: 'title', width: 150,
+                        formatter: function (cellValue, options, rowObject) {
+                            return "<a href='/article/headline/edit/" + rowObject.id + "/'>" + rowObject.title + "</a>";
+
+                        }
+                    },
+                    {
+                        name: 'status', index: 'status', width: 60,
+                        formatter: function (cellValue, options, rowObject) {
+                            var value = (rowObject.status & 2) >> 1 == 1 ? '已置顶' : '未置顶';
+                            return "<span class='label label-success radius'>" + value + "</span>";
+                        }
+                    },
+                    {name: 'createdTime', index: 'createdTime', width: 80},
+                    {
+                        name: 'operation', index: 'operation', width: 70,
+                        formatter: function (cellValue, options, rowObject) {
+                            var html = '';
+                            if ((rowObject.status & 2) >> 1 == 0) {
+                                html += "<a style='text-decoration:none' onClick='setStatus(this," + rowObject.id + ")' href='javascript:;'>置顶</a> "
+                            }
+                            return html;
+                        }
+                    }
+                ]
+            };
+            JucheapGrid.Load(config);
+            $("#btnSearch").bind("click", searchData);
+        });
+    </script>
+
+    <script type="text/javascript">
+        function setStatus(obj, id) {
+            var url = '/article/headline/setstatus/';
+
+            parent.layer.confirm('确定要置顶？', {
+                    btn: ['确定', '取消'],
+                    shade: false,
+                    closeBtn: 0
+                },
+                function () {
+                    postData(url, {'id': id, 'opt': 'top', 'flag': 1}, function () {
+                        $("#table_list").trigger("reloadGrid");
+                        parent.layer.msg('操作成功', {icon: 6, time: 1000})
+
+                    });
+                }
+            )
+        }
+    </script>
+
+{% endblock %}

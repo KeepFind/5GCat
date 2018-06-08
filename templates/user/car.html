@@ -1,0 +1,117 @@
+{% extends 'base/_layout_content.html' %}
+{% load staticfiles %}
+
+{% block content %}
+    <div class="wrapper wrapper-content">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>车辆信息</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <div class="form-group">
+                </div>
+                <div class="form-group text-center">
+                    <div class="form-inline">
+                        用户：
+                        <div class="input-group">
+                            <input type="text" class="input form-control" id="userId" data-id="{{ userId }}"
+                                   value="{{ userName }}"
+                                   autocomplete="off">
+                            <div class="input-group-btn">
+                                <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                </ul>
+                            </div>
+                        </div>
+                        车牌：
+                        <div class="input-group">
+                            <input type="text" class="input form-control" id="carNo">
+                        </div>
+                        <button id="btnSearch" class="btn btn btn-primary" type="button">
+                            <i class="fa fa-search"></i> 搜索
+                        </button>
+                    </div>
+                </div>
+                <div class="jqGrid_wrapper">
+                    <table id="table_list"></table>
+                    <div id="pager_list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block script %}
+    {% include 'include/jslist.html' %}
+    {% include 'include/search.html' %}
+
+    <script>
+        function delData() { //删除
+            XPage.DelData("");
+        }
+
+        function searchData() { //搜索
+            var json = {
+                userId: $("#userId").attr('data-id'),
+                carNo: $("#carNo").val()
+            };
+            XPage.Search(json);
+        }
+
+        $(document).ready(function () {
+            var config = {
+                title: '车辆列表',
+                url: '{% url "user:car_list" %}',
+                multiselect: false,
+                postData: {'userId': $("#userId").attr('data-id'), 'carNo': $("#carNo").val()},
+                colNames: ['id', '车牌', '用户名', '号码类型', '车主姓名', '年检日期', '保险日期', '创建时间'],
+                colModel: [
+                    {name: 'id', index: 'id', width: 60, key: true, hidden: true},
+                    {
+                        name: 'carNo', width: 50,
+                        formatter: function (cellValue, options, rowObject) {
+                            return "<a href='javascript:void(0)'  onclick='layer(" + "\"car\"" + "," + rowObject.id + ")'>" + rowObject.carNoFix + rowObject.carNo + "</a>";
+                        }
+                    },
+                    {
+                        name: 'userName', index: 'userName', width: 50,
+                        formatter: function (cellValue, options, rowObject) {
+                            return "<a href='/user/index/?userId=" + rowObject.userId + "'>" + rowObject.userName + "</a>";
+                        }
+                    },
+                    {name: 'infoType', index: 'infoType', width: 40},
+                    {name: 'owner', width: 50,},
+                    {name: 'annualSurveyDate', width: 80,},
+                    {name: 'insuranceDate', width: 80,},
+                    {name: 'createdTime', width: 80},
+                ]
+            };
+            JucheapGrid.Load(config);
+            $("#btnSearch").bind("click", searchData);
+        });
+    </script>
+
+    <script type="text/javascript">
+        function layer(name, relate_id) {
+            var title, url;
+            var height = '500px';
+
+            switch (name) {
+                case 'car':
+                    title = '车辆信息';
+                    url = '/user/car/detail/' + relate_id;
+                    break;
+            }
+            parent.layer.open({
+                title: title,
+                type: 2,
+                content: url,
+                area: ['800px', height],
+            });
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,97 @@
+{% extends 'base/_layout_content.html' %}
+{% load staticfiles %}
+
+{% block style %}
+    <link href="{% static 'js/plugins/fileinput/css/fileinput.min.css' %}" rel="stylesheet"/>
+{% endblock %}
+
+{% block content %}
+    <div class="wrapper wrapper-content">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>编辑头条</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <form method="post" class="form-horizontal" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="col-sm-1-5 control-label">标题：</label>
+                        <div class="col-sm-9-5 disabled">
+                            {{ form.title }}
+                            {% autoescape off %}
+                                {{ error.title }}
+                            {% endautoescape %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-1-5 control-label">简介：</label>
+                        <div class="col-sm-9-5">
+                            {{ form.intro }}
+                            {% autoescape off %}
+                                {{ error.intro }}
+                            {% endautoescape %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-1-5 control-label">图片：</label>
+                        <div class="col-sm-9-5 disabled">
+                            <input id="file-0a" name="imgUrl" class="file" type="file" data-min-file-count="0"
+                                   value="{{ form.imgUrl.value }}">
+                            {% autoescape off %}
+                                {{ error.imgUrl }}
+                            {% endautoescape %}
+                            <input type="hidden" class="img-hidden" name="imgUrlurl" value="{{ form.imgUrl.value }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-1-5 control-label">置顶：</label>
+                        <div class="col-sm-9-5 disabled">
+                            {{ form.is_top }}
+                            {% autoescape off %}
+                                {{ error.is_top }}
+                            {% endautoescape %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-1-5 control-label">内容：</label>
+                        <div class="col-sm-9-5 disabled">
+                            <textarea id="myEditor" name="body"
+                                      style="width:100%;height:300px;">{{ form.body.value }}</textarea>
+                            {% autoescape off %}
+                                {{ error.body }}
+                            {% endautoescape %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-3 col-sm-9-5">
+                            <button class="btn btn-info" type="submit" id="btnSave">保存</button>
+                            <button class="btn btn-white" type="button" id="btnBack" data-type="url">返回</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script type="text/javascript" src="{% static 'js/plugins/ueditor/ueditor.config.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/plugins/ueditor/ueditor.all.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/plugins/ueditor/lang/zh-cn/zh-cn.js' %}"></script>
+
+    <script type="text/javascript" src="{% static 'js/plugins/fileinput/js/fileinput.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/plugins/fileinput/js/locales/zh.js' %}"></script>
+
+    {% include 'include/img_upload.html' %}
+
+    <script type="text/javascript">
+        //实例化编辑器
+        var ue = UE.getEditor('myEditor');
+    </script>
+{% endblock %}
+

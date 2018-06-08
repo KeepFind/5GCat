@@ -1,0 +1,131 @@
+{% extends 'base/_layout_content.html' %}
+{% load staticfiles %}
+
+{% block content %}
+    <div class="wrapper wrapper-content">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>广告信息</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <div class="form-group">
+                    <button id="btnAdd1" type="button" class="btn btn-primary " onclick="addModel1()"><i
+                            class="fa fa-check"></i>&nbsp;添加文字
+                    </button>
+                    <button id="btnAdd2" type="button" class="btn btn-primary " onclick="addModel2()"><i
+                            class="fa fa-check"></i>&nbsp;添加图片
+                    </button>
+                    <button id="btnDel" type="button" class="btn btn-danger " onclick="delData()">
+                        <i class="fa fa-dedent"></i>&nbsp;&nbsp;<span class="bold">删除</span>
+                    </button>
+                </div>
+                <div class="form-group text-center">
+                    <div class="form-inline">
+                        广告位：
+                        <div class="input-group" style="width: 200px;">
+                            <input type="text" class="form-control" id="posiId" data-id="{{ posiId }}"
+                                   style="width: 200px;"
+                                   value="{{ posiName }}"
+                                   autocomplete="off">
+                            <div class="input-group-btn">
+                                <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                </ul>
+                            </div>
+                        </div>
+                        创建日期：
+                        <input type="text" id="datemin" class="laydate-icon form-control layer-date">-
+                        <input type="text" id="datemax" class="laydate-icon form-control layer-date">
+                        <button id="btnSearch" class="btn btn btn-primary" type="button">
+                            <i class="fa fa-search"></i> 搜索
+                        </button>
+                    </div>
+                </div>
+                <div class="jqGrid_wrapper">
+                    <table id="table_list"></table>
+                    <div id="pager_list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block script %}
+    {% include 'include/jslist.html' %}
+    {% include 'include/search.html' %}
+
+    <script>
+        function addModel1() {
+            $("#btnAdd1").button("loading");
+            window.location.href = "{% url 'ad:ad_add' 'article' %}";
+        }
+
+        function addModel2() {
+            $("#btnAdd2").button("loading");
+            window.location.href = "{% url 'ad:ad_add' 'img' %}";
+        }
+
+        function delData() { //删除
+            XPage.DelData("{% url 'ad:ad_delete' %}");
+        }
+
+        function searchData() { //搜索
+            var json = {
+                posiId: $("#posiId").attr('data-id'),
+                createStart: $("#datemin").val(),
+                createEnd: $("#datemax").val()
+            };
+            XPage.Search(json);
+        }
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var config = {
+                title: '广告列表',
+                url: '{% url "ad:ad_list" %}',
+                colNames: ['ID', '广告位', '标题', '广告类型', '广告链接', '创建时间'],
+                colModel: [
+                    {
+                        name: 'id', index: 'id', width: 15, key: true,
+                        formatter: function (cellValue, options, rowObject) {
+                            return "<a href='/ad/edit/" + rowObject.id + "/'>" + rowObject.id + "</a>";
+                        }
+                    },
+                    {name: 'posiName', index: 'posiName', width: 40},
+                    {
+                        name: 'title', index: 'title', width: 100,
+                        formatter: function (cellValue, options, rowObject) {
+                            if (rowObject.adType == '图片') {
+                                return ''
+                            }
+                            return rowObject.title;
+                        }
+                    },
+                    {name: 'adType', index: 'adType', width: 30},
+                    {name: 'linkUrl', index: 'linkUrl', width: 80},
+                    {name: 'createdTime', index: 'createdTime', width: 80},
+                ]
+            };
+            JucheapGrid.Load(config);
+            $("#btnSearch").bind("click", searchData);
+        });
+    </script>
+
+
+    <script type="text/javascript">
+        laydate({
+            elem: '#datemin',
+            event: 'focus'
+        });
+        laydate({
+            elem: '#datemax',
+            event: 'focus'
+        });
+    </script>
+
+{% endblock %}

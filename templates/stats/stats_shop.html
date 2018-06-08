@@ -1,0 +1,114 @@
+{% extends 'base/_layout_content.html' %}
+{% load staticfiles %}
+
+{% block content %}
+    <div class="wrapper wrapper-content">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>结算明细</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <div class="form-group">
+                </div>
+                <div class="form-group text-center">
+                    <div class="form-inline">
+                        <input type="hidden" class="form-control" id="shopNo" value="{{ shopNo }}"/>
+                        <input type="hidden" class="form-control" id="payTime" value="{{ payTime }}"/>
+                        {#                        支付日期：#}
+                        {#                        <input type="text" id="datemin" class="laydate-icon form-control layer-date"/>-#}
+                        {#                        <input type="text" id="datemax" class="laydate-icon form-control layer-date"/>#}
+                        {#                        <button id="btnSearch" class="btn btn btn-primary" type="button">#}
+                        {#                            <i class="fa fa-search"></i> 搜索#}
+                        {#                        </button>#}
+                    </div>
+                </div>
+                <div class="jqGrid_wrapper">
+                    <table id="table_list"></table>
+                    <div id="pager_list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block script %}
+    {% include 'include/jslist.html' %}
+    {#    {% include 'include/search.html' %}#}
+
+    <script>
+        function addModel() {
+            $("#btnAdd").button("loading");
+            window.location.href = "{% url 'shop:shop_add' %}";
+        }
+        function delData() { //删除
+            XPage.DelData("{% url 'shop:shop_delete' %}");
+        }
+        function searchData() { //搜索
+            var json = {
+                shopNo: $("#shopNo").val(),
+                createStart: $("#datemin").val(),
+                createEnd: $("#datemax").val()
+            };
+            XPage.Search(json);
+        }
+
+        $(document).ready(function () {
+            var config = {
+                title: '',
+                url: '{% url "stats:stats_shop_list" %}',
+                multiselect: false,
+                postData: {'shopNo': $("#shopNo").val(), 'payTime': $('#payTime').val()},
+                colNames: ['ID', '门店', '用户', '金额', '收款类型', '维保单号', '支付时间', '创建时间'],
+                colModel: [
+                    {
+                        name: 'id', index: 'id', width: 20, key: true,
+                        formatter: function (cellValue, options, rowObject) {
+                            return "<a href='javascript:void(0)'  onclick='layer(" + "\"stats\"" + "," + rowObject.id + ")'>" + rowObject.id + "</a>";
+                        }
+                    },
+                    {name: 'shopName', index: 'shopName', width: 100},
+                    {
+                        name: 'userName', index: 'userName', width: 60,
+                        formatter: function (cellValue, options, rowObject) {
+                            return "<a href='/user/index/?userId=" + rowObject.userId + "'>" + rowObject.userName + "</a>";
+                        }
+                    },
+                    {name: 'money', index: 'money', width: 50},
+                    {name: 'consumerType', index: 'consumerType', width: 60},
+                    {name: 'policyNo', index: 'policyNo', width: 80},
+                    {name: 'payTime', index: 'payTime', width: 80},
+                    {name: 'createdTime', index: 'createdTime', width: 80}
+                ]
+            };
+            JucheapGrid.Load(config);
+            $("#btnSearch").bind("click", searchData);
+        });
+    </script>
+
+
+    <script type="text/javascript">
+        function layer(name, relate_id) {
+            var title, url;
+            var height = '500px';
+
+            switch (name) {
+                case 'stats':
+                    title = '结算信息';
+                    url = '/stats/detail/' + relate_id;
+                    break;
+            }
+            parent.layer.open({
+                title: title,
+                type: 2,
+                content: url,
+                area: ['800px', height],
+            });
+        }
+    </script>
+
+{% endblock %}

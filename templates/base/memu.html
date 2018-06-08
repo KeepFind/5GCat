@@ -1,0 +1,258 @@
+<nav class="navbar-default navbar-static-side" role="navigation">
+    <div class="nav-close">
+        <i class="fa fa-times-circle"></i>
+    </div>
+
+    <div class="slimScrollDiv" style="position: relative; width: auto; height: 100%;">
+        <div class="sidebar-collapse" style="width: auto; height: 100%;">
+            <ul class="nav" id="side-menu">
+                <li class="nav-header">
+                    <div class="dropdown profile-element">
+                        <h1 style="font-size: 1.8em; color: white; text-align: center">G汽猫运营平台</h1>
+                    </div>
+                    <div class="logo-element">
+                        G
+                    </div>
+                </li>
+{##}
+{#                <li>#}
+{#                    <a class="J_menuItem" href="{% url 'user:brand' %}">#}
+{#                        <i class="fa fa-tv"></i>#}
+{#                        <span class="nav-label">车型库</span>#}
+{#                        <span class="fa arrow"></span>#}
+{#                    </a>#}
+{#                </li>#}
+
+                {% if perms.user %}
+                    <li>
+                        <a href="#">
+                            <i class="fa fa-tv"></i>
+                            <span class="nav-label">车主管理</span>
+                            <span class="fa arrow"></span>
+                        </a>
+                        <ul class="nav nav-second-level collapse">
+                            {% if perms.user.view_user %}
+                                <li>
+                                    <a class="J_menuItem" href="{% url 'user:user' %}" data-index="0">车主信息</a>
+                                </li>
+                            {% endif %}
+                            {% if perms.user.view_carinfo %}
+                                <li>
+                                    <a class="J_menuItem" href="{% url 'user:car' %}" data-index="0">车辆信息</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                {% endif %}
+
+{#                <li>#}
+{#                    <a href="#">#}
+{#                        <i class="fa fa-tv"></i>#}
+{#                        <span class="nav-label">OBD管理</span>#}
+{#                        <span class="fa arrow"></span>#}
+{#                    </a>#}
+{#                    <ul class="nav nav-second-level collapse">#}
+{#                        {% if perms.account.view_payinfo %}#}
+{#                            <li>#}
+{#                                <a class="J_menuItem" href="{% url 'obd:obd' %}" data-index="0">OBD设备</a>#}
+{#                            </li>#}
+{#                        {% endif %}#}
+{#                    </ul>#}
+{#                </li>#}
+
+                {% if perms.account %}
+                    <li>
+                        <a href="#">
+                            <i class="fa fa-tv"></i>
+                            <span class="nav-label">账务管理</span>
+                            <span class="fa arrow"></span>
+                        </a>
+                        <ul class="nav nav-second-level collapse">
+                            {% if perms.account.view_payinfo %}
+                                <li>
+                                    <a class="J_menuItem" href="{% url 'account:product' %}" data-index="0">产品信息</a>
+                                </li>
+                            {% endif %}
+                            {% if perms.account.view_payorder %}
+                                <li>
+                                    <a class="J_menuItem" href="{% url 'account:payorder' %}" data-index="0">充值信息</a>
+                                </li>
+                            {% endif %}
+                            {% if perms.account.view_withdraworder %}
+                                <li>
+                                    <a class="J_menuItem" href="{% url 'account:withdraworder' %}"
+                                       data-index="0">提现信息</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                {% endif %}
+
+                {% if perms.stats %}
+                    <li>
+                        <a href="#">
+                            <i class="fa fa-tv"></i>
+                            <span class="nav-label">结算管理</span>
+                            <span class="fa arrow"></span>
+                        </a>
+                        <ul class="nav nav-second-level collapse">
+                            {% if perms.stats.view_receivemoney %}
+                                <li>
+                                    <a class="J_menuItem" href="{% url 'stats:stats_all' %}" data-index="0">结算查询</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                {% endif %}
+
+                {% if perms.shop %}
+                    <li>
+                        <a href="#">
+                            <i class="fa fa-tv"></i>
+                            <span class="nav-label">门店管理</span>
+                            <span class="fa arrow"></span>
+                        </a>
+                        <ul class="nav nav-second-level collapse">
+                            {% if perms.shop.view_shop %}
+                                <li>
+                                    <a class="J_menuItem" href="{% url 'shop:shop' %}" data-index="0">门店信息</a>
+                                </li>
+                            {% endif %}
+                            {% if perms.shop.view_shopmanager %}
+                                <li>
+                                    <a class="J_menuItem" href="{% url 'shop:shopmanager' %}" data-index="0">门店管理员</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                {% endif %}
+
+                {% if perms.advance %}
+                    <li>
+                        <a href="#">
+                            <i class="fa fa-tv"></i>
+                            <span class="nav-label">预约管理</span>
+                            <span class="fa arrow"></span>
+                        </a>
+                        <ul class="nav nav-second-level collapse">
+                            {% if perms.advance.view_advanceinfo %}
+                                <li>
+                                    <a class="J_menuItem" href="{% url 'advance:advance' %}" data-index="0">预约信息</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                {% endif %}
+
+                {% if perms.ad %}
+                    <li>
+                        <a href="#">
+                            <i class="fa fa-tv"></i>
+                            <span class="nav-label">广告管理</span>
+                            <span class="fa arrow"></span>
+                        </a>
+                        <ul class="nav nav-second-level collapse">
+                            {% if perms.ad.view_adposition %}
+                                <li>
+                                    <a class="J_menuItem" href="{% url 'ad:adposition' %}" data-index="0">广告位</a>
+                                </li>
+                            {% endif %}
+                            {% if perms.ad.view_advertisement %}
+                                <li>
+                                    <a class="J_menuItem" href="{% url 'ad:ad' %}" data-index="0">广告信息</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                {% endif %}
+
+                {% if perms.activity %}
+                    <li>
+                        <a href="#">
+                            <i class="fa fa-tv"></i>
+                            <span class="nav-label">活动管理</span>
+                            <span class="fa arrow"></span>
+                        </a>
+                        <ul class="nav nav-second-level collapse">
+                            {% if perms.activity.view_ridersactivity %}
+                                <li>
+                                    <a class="J_menuItem" href="{% url 'activity:activity' %}" data-index="0">活动信息</a>
+                                </li>
+                            {% endif %}
+                            {% if perms.activity.view_activitysign %}
+                                <li>
+                                    <a class="J_menuItem" href="{% url 'activity:sign' %}" data-index="0">报名信息</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                {% endif %}
+
+                {% if perms.article %}
+                    <li>
+                        <a href="#">
+                            <i class="fa fa-tv"></i>
+                            <span class="nav-label">内容管理</span>
+                            <span class="fa arrow"></span>
+                        </a>
+                        <ul class="nav nav-second-level collapse">
+                            {% if perms.article.view_headline %}
+                                <li>
+                                    <a class="J_menuItem" href="{% url 'article:headline' %}" data-index="0">头条信息</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                {% endif %}
+
+                {% if perms.manage or perms.auth %}
+                    <li>
+                        <a href="#">
+                            <i class="fa fa-tv"></i>
+                            <span class="nav-label">系统管理</span>
+                            <span class="fa arrow"></span>
+                        </a>
+                        <ul class="nav nav-second-level collapse">
+                            {% if perms.manage.view_sysconfig %}
+                                <li>
+                                    <a class="J_menuItem" href="{% url 'manage:config' %}" data-index="0">系统配置</a>
+                                </li>
+                            {% endif %}
+                            {% if perms.manage.view_user %}
+                                <li>
+                                    <a class="J_menuItem" href="{% url 'manage:user' %}" data-index="0">用户信息</a>
+                                </li>
+                            {% endif %}
+                            {% if perms.auth.view_group %}
+                                <li>
+                                    <a class="J_menuItem" href="{% url 'manage:group' %}" data-index="0">角色信息</a>
+                                </li>
+                            {% endif %}
+                            {% if perms.manage.view_logentry %}
+                                <li>
+                                    <a class="J_menuItem" href="{% url 'manage:log' %}" data-index="0">日志记录</a>
+                                </li>
+                            {% endif %}
+                            {% if perms.manage.view_smsrecord %}
+                                <li>
+                                    <a class="J_menuItem" href="{% url 'manage:sms' %}" data-index="0">短信记录</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+        <div class="slimScrollBar"
+             style="background: rgb(0, 0, 0); width: 4px; position: absolute; top: 0px; opacity: 0.4; display: none; border-radius: 7px; z-index: 99; right: 1px; height: 615px;"></div>
+        <div class="slimScrollRail"
+             style="width: 4px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 7px; background: rgb(51, 51, 51); opacity: 0.9; z-index: 90; right: 1px;"></div>
+    </div>
+
+    {#    <div class="sidebar-footer">#}
+    {#        <a id="btnChangeMenu"><span class="fa fa-reorder"></span></a>#}
+    {#        <a class="hidden-small"><span class="fa fa-desktop"></span></a>#}
+    {#        <a class="hidden-small"><span class="fa fa-lock"></span></a>#}
+    {#        <a class="hidden-small" href=""><span class="fa fa-power-off"></span></a>#}
+    {#    </div>#}
+</nav>

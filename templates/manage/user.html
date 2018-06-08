@@ -1,0 +1,168 @@
+{% extends 'base/_layout_content.html' %}
+{% load staticfiles %}
+
+{% block style %}
+    <link href="{% static 'css/plugins/jqgrid/ui.jqgrid.css' %}" rel="stylesheet"/>
+{% endblock %}
+
+{% block content %}
+    <div class="wrapper wrapper-content">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>用户信息</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <div class="form-group">
+                    <button id="btnAdd" type="button" class="btn btn-primary " onclick="addModel()"><i
+                            class="fa fa-check"></i>&nbsp;添加
+                    </button>
+                    <button id="btnDel" type="button" class="btn btn-danger " onclick="delData()">
+                        <i class="fa fa-dedent"></i>&nbsp;&nbsp;<span class="bold">删除</span>
+                    </button>
+                    <button id="btnEdit" type="button" class="btn btn-info " onclick="editModel()"><i
+                            class="fa fa-paste"></i> 用户授权
+                    </button>
+                </div>
+                <div class="form-group">
+                    {#                    <div class="input-group">#}
+                    {#                        <input id="txtSearchKey" type="text" class="input form-control" placeholder="输入用户名查询"/>#}
+                    {#                        <span class="input-group-btn">#}
+                    {#                        <button id="btnSearch" class="btn btn btn-primary" type="button"> <i class="fa fa-search"></i> 搜索</button>#}
+                    {#                    </span>#}
+                    {#                    </div>#}
+                </div>
+
+                <div class="jqGrid_wrapper">
+                    <table id="table_list"></table>
+                    <div id="pager_list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block script %}
+    {% include 'include/jslist.html' %}
+
+    <script>
+        function addModel() {
+            $("#btnAdd").button("loading");
+            window.location.href = "{% url 'manage:user_add' %}";
+        }
+        function editModel() { //编辑
+            var row = JucheapGrid.GetData();
+            if (row != null) {
+                $("#btnEdit").button("loading");
+                window.location.href = "/manage/user/perm/" + row.id;
+            } else {
+                parent.layer.alert("请选择要授权的用户");
+            }
+        }
+
+        function delData() { //删除
+            XPage.DelData("{% url 'manage:user_delete' %}");
+        }
+
+        function searchData() { //搜索
+            var json = {
+                keywords: $("#txtSearchKey").val()
+            };
+            XPage.Search(json);
+        }
+
+        $(document).ready(function () {
+            var config = {
+                title: '用户列表',
+                url: '{% url "manage:user_list" %}',
+                colNames: ['id', '用户名', '手机', 'Email', '是否超级管理员', '是否停用', '操作'],
+                colModel: [
+                    {name: 'id', index: 'id', width: 60, key: true, hidden: true},
+                    {
+                        name: 'username', index: 'username', width: 60,
+                        formatter: function (cellValue, options, rowObject) {
+                            return "<a href='/manage/user/edit/" + rowObject.id + "'>" + rowObject.username + "</a>";
+
+                        }
+                    },
+                    {name: 'mobile', index: 'mobile', width: 60},
+                    {name: 'email', index: 'email', width: 60},
+                    {
+                        name: 'is_superuser', index: 'is_superuser', width: 60,
+                        formatter: function (cellValue, options, rowObject) {
+                            return rowObject.is_superuser ? '是' : '否';
+                        }
+                    },
+                    {
+                        name: 'is_active', index: 'is_active', width: 60,
+                        formatter: function (cellValue, options, rowObject) {
+                            var value = rowObject.is_active ? '已启用' : '已停用';
+                            return "<span class='label label-success radius'>" + value + "</span>";
+                        }
+                    },
+                    {
+                        name: 'operation', index: 'operation', width: 70,
+                        formatter: function (cellValue, options, rowObject) {
+                            var html = '';
+                            if (!rowObject.is_active) {
+                                html += "<a style='text-decoration:none' onClick='setActivate(this," + rowObject.id + ")' href='javascript:;'>启用</a>"
+                            }
+                            else {
+                                html += "<a style='text-decoration:none' onClick='setDeactivate(this," + rowObject.id + ")' href='javascript:;'>停用</a> "
+                            }
+                            return html;
+                        }
+                    }
+                ]
+            };
+            JucheapGrid.Load(config);
+            $("#btnSearch").bind("click", searchData);
+        });
+    </script>
+
+
+    <script type="text/javascript">
+        function setActivate(obj, id) {
+            var url = '/manage/user/setstatus/';
+
+            parent.layer.confirm('确定要启用？', {
+                    btn: ['确定', '取消'],
+                    shade: false,
+                    closeBtn: 0
+                },
+                function () {
+                    postData(url, {'id': id, 'opt': 'activate', 'flag': 1}, function () {
+                        $(obj).parents("tr").find("td[aria-describedby=table_list_operation]").prepend("<a style='text-decoration:none'  onClick='setDeactivate(this," + id + ")' href='javascript:;'>停用</a>");
+                        $(obj).parents("tr").find("td[aria-describedby=table_list_is_active]").html('<span class="label label-success radius">已启用</span>');
+                        $(obj).remove();
+                        parent.layer.msg('操作成功', {icon: 6, time: 1000})
+                    });
+                }
+            )
+        }
+
+        function setDeactivate(obj, id) {
+            var url = '/manage/user/setstatus/';
+
+            parent.layer.confirm('确定要停用？', {
+                    btn: ['确定', '取消'],
+                    shade: false,
+                    closeBtn: 0
+                },
+                function () {
+                    postData(url, {'id': id, 'opt': 'activate', 'flag': 0}, function () {
+                        $(obj).parents("tr").find("td[aria-describedby=table_list_operation]").prepend("<a style='text-decoration:none'  onClick='setActivate(this," + id + ")' href='javascript:;'>启用</a>");
+                        $(obj).parents("tr").find("td[aria-describedby=table_list_is_active]").html('<span class="label label-success radius">已停用</span>');
+                        $(obj).remove();
+                        parent.layer.msg('操作成功', {icon: 6, time: 1000})
+                    });
+                }
+            )
+        }
+    </script>
+
+{% endblock %}

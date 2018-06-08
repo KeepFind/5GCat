@@ -1,0 +1,119 @@
+{% extends 'base/_layout_content.html' %}
+{% load staticfiles %}
+
+
+{% block style %}
+    <link href="{% static 'js/plugins/ueditor/themes/default/css/ueditor.min.css' %}" rel="stylesheet"/>
+{% endblock %}
+
+{% block content %}
+    <div class="wrapper wrapper-content">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>编辑活动</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <form method="post" class="form-horizontal">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="col-sm-1-5 control-label">主题：</label>
+                        <div class="col-sm-9-5">
+                            {{ form.acTitle }}
+                            {% autoescape off %}
+                                {{ error.acTitle }}
+                            {% endautoescape %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-1-5 control-label">时间：</label>
+                        <div class="col-sm-9-5">
+                            {{ form.acTime }}
+                            {% autoescape off %}
+                                {{ error.acTime }}
+                            {% endautoescape %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-1-5 control-label">地点：</label>
+                        <div class="col-sm-9-5">
+                            {{ form.acAddress }}
+                            {% autoescape off %}
+                                {{ error.acAddress }}
+                            {% endautoescape %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-1-5 control-label">参加人数：</label>
+                        <div class="col-sm-9-5">
+                            {{ form.totalNum }}
+                            {% autoescape off %}
+                                {{ error.totalNum }}
+                            {% endautoescape %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-1-5 control-label">是否需要报名：</label>
+                        <div class="col-sm-9-5">
+                            {{ form.signflag }}
+                            {% autoescape off %}
+                                {{ error.signflag }}
+                            {% endautoescape %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-1-5 control-label">已报名人数：</label>
+                        <div class="col-sm-9-5">
+                            {{ form.signNum }}
+                            {% autoescape off %}
+                                {{ error.signNum }}
+                            {% endautoescape %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-1-5 control-label">内容：</label>
+                        <div class="col-sm-9-5">
+                         <textarea id="myEditor" name="acBody"
+                                   style="width:100%;height:300px;">{{ form.acBody.value }}</textarea>
+                            {% autoescape off %}
+                                {{ error.acBody }}
+                            {% endautoescape %}
+                        </div>
+                    </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-3 col-sm-9-5">
+                    <button class="btn btn-info" type="submit" id="btnSave">保存</button>
+                    <button class="btn btn-white" type="button" id="btnBack" data-type="url">返回</button>
+                </div>
+            </div>
+            </form>
+        </div>
+    </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script type="text/javascript" src="{% static 'js/plugins/layer/laydate/laydate.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/plugins/ueditor/ueditor.config.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/plugins/ueditor/ueditor.all.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/plugins/ueditor/lang/zh-cn/zh-cn.js' %}"></script>
+
+
+    <script type="text/javascript">
+        //实例化编辑器
+        var ue = UE.getEditor('myEditor');
+
+        laydate({
+            elem: '#id_acTime', //目标元素。
+            format: 'YYYY/MM/DD hh:mm:ss', //日期格式
+            istime: true, //是否开启时间选择
+        });
+    </script>
+
+{% endblock %}
+

@@ -1,0 +1,35 @@
+{% load settings_extras %}
+
+<script type="text/javascript">
+    var domain = '{% settings_value 'QINIU_DOMAIN' %}'
+
+    // 文件上传框
+    $('input[class=file]').each(function () {
+        var imageurl = $(this).attr("value");
+        var options = {
+            language: 'zh',
+            showBrowse: true,
+            showUpload: false
+        };
+        if (imageurl) {
+            options['initialPreview'] = [ // 预览图片的设置
+                "<img src='" + domain + imageurl + "' class='file-preview-image kv-preview-data' style='width:auto;height:160px;'>"]
+        }
+        $(this).fileinput(options);
+    });
+
+    $(function () {
+        $('input[class=file]').on('filecleared', function (event) {
+            console.log("filecleared");
+            $img = $(this).parents('.file-hidden').children('.img-hidden');
+
+            $img.val('');
+
+            var img_name = $(this).attr('name');
+
+            var hidden_name = img_name + 'url';
+            console.log(hidden_name);
+            $('input[name=' + hidden_name + ']').val('');
+        });
+    })
+</script>

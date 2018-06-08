@@ -1,0 +1,4 @@
+﻿
+.table .text-c th,.table .text-c td{text-align:center}/*整行居中*/
+
+.input-text,.input-text.size-M,.btn.size-M{ font-size:14px; height:31px;*height:auto;line-height:1.42857;padding:4px}/*默认为M，可以不写，可以理解为：均码*/

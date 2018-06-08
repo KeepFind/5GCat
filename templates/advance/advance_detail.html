@@ -1,0 +1,87 @@
+{% extends 'base/_layout_content.html' %}
+{% load staticfiles %}
+{% load filters %}
+
+{% block content %}
+    <div class="wrapper wrapper-content">
+        <form class="form-horizontal">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">预约号：</label>
+                <div class="col-sm-8 disabled">
+                    <input class="form-control" type="text" readonly value="{{ model.advanceNo }}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">预约类型：</label>
+                <div class="col-sm-8 disabled">
+                    <input class="form-control" type="text" readonly value="{{ model.type }}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">门店：</label>
+                <div class="col-sm-8 disabled">
+                    <input class="form-control" type="text" readonly value="{{ model.shopName }}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">预约时间：</label>
+                <div class="col-sm-8 disabled">
+                    <input class="form-control" type="text" readonly value="{{ model.orderTime }}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">预约套餐名称：</label>
+                <div class="col-sm-8 disabled">
+                    <input class="form-control" type="text" readonly
+                           value="{{ model.packageName | default_if_none:'' }}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">预约套餐编号：</label>
+                <div class="col-sm-8 disabled">
+                    <input class="form-control" type="text" readonly
+                           value="{{ model.packageNo | default_if_none:'' }}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">第三方单号：</label>
+                <div class="col-sm-8 disabled">
+                    <input class="form-control" type="text" readonly value="{{ model.thirdNo | default_if_none:'' }}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">改期时间：</label>
+                <div class="col-sm-8 disabled">
+                    <input class="form-control" type="text" readonly
+                           value="{{ model.reschduleTime | default_if_none:'' }}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">改期说明：</label>
+                <div class="col-sm-8 disabled">
+                    <input class="form-control" type="text" readonly
+                           value="{{ model.reschduleDesc | default_if_none:'' }}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">是否取消：</label>
+                <div class="col-sm-8 disabled">
+                    <input class="form-control" type="text" readonly value="{{ model.status |is_canceled }}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">创建时间：</label>
+                <div class="col-sm-8 disabled">
+                    <input class="form-control" type="text" readonly value="{{ model.createdTime }}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">备注：</label>
+                <div class="col-sm-8 disabled">
+                    <textarea class="form-control" type="text"
+                              readonly>{{ model.remark | default_if_none:'' }}</textarea>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}

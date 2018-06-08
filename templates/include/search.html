@@ -1,0 +1,56 @@
+{% load staticfiles %}
+<script type="text/javascript" src="{% static 'js/plugins/suggest/bootstrap-suggest.min.js' %}"></script>
+
+<script type="text/javascript">
+    $(function () {
+        //用户列表
+        $("#userId").bsSuggest({
+            url: "{% url 'user:user_selector' %}?userName=",
+            allowNoKeyword: false,
+            effectiveFields: ["userName"],
+            searchFields: ["userName"],
+            getDataMethod: "url",
+            idField: "userId",
+            keyField: "userName",
+            clearable: false,
+            delay: 3000
+        });
+
+        //活动列表
+        $("#raId").bsSuggest({
+            url: "{% url 'activity:activity_selector' %}?acTitle=",
+            allowNoKeyword: false,
+            effectiveFields: ["acTitle"],
+            searchFields: ["acTitle"],
+            getDataMethod: "url",
+            idField: "raId",
+            keyField: "acTitle",
+            delay: 3000
+        });
+
+        //门店列表
+        $("#shopNo").bsSuggest({
+            url: "{% url 'shop:shop_selector' %}?shopName=",
+            allowNoKeyword: false,
+            effectiveFields: ["shopName"],
+            searchFields: ["shopName"],
+            getDataMethod: "url",
+            idField: "shopNo",
+            keyField: "shopName",
+            delay: 3000
+        });
+
+        //广告位列表
+        $("#posiId").bsSuggest({
+            url: "{% url 'ad:adposition_selector' %}?posiName=",
+            {#            allowNoKeyword: false,#}
+            effectiveFields: ["posiName"],
+            searchFields: ["posiName"],
+            getDataMethod: "url",
+            idField: "posiId",
+            keyField: "posiName",
+            delay: 3000
+        });
+    })
+
+</script>
